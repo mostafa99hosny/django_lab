@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded">
+    <h1 class="display-4">Welcome to Our Store!</h1>
+    <p class="lead">Browse our products and categories.</p>
+    <hr class="my-4">
+    <p>Find the best products at the best prices.</p>
+    <div class="d-flex gap-2">
+        <a class="btn btn-primary btn-lg" href="{% url 'product:product_list' %}" role="button">View Products</a>
+        <a class="btn btn-secondary btn-lg" href="{% url 'category:category_list' %}" role="button">View Categories</a>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Products</h5>
+                <p class="card-text">Browse our wide range of products across various categories.</p>
+                <a href="{% url 'product:product_list' %}" class="btn btn-primary">View Products</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Categories</h5>
+                <p class="card-text">Explore our product categories to find what you're looking for.</p>
+                <a href="{% url 'category:category_list' %}" class="btn btn-primary">View Categories</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
