@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.http import HttpResponseRedirect
 from .models import Product
 from .forms import ProductForm
 
@@ -89,3 +90,11 @@ def product_delete(request, pk):
         messages.success(request, 'Product deleted successfully!')
         return redirect('product:product_list')
     return render(request, 'product/product_confirm_delete.html', {'product': product})
+
+@login_required
+def add_to_cart(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    # In a real application, you would add the product to a cart model
+    # For now, we'll just show a success message
+    messages.success(request, f'{product.name} has been added to your cart!')
+    return HttpResponseRedirect(reverse('product:product_detail', args=[pk]))

@@ -2,12 +2,48 @@
 
 {% block title %}{{ product.name }}{% endblock %}
 
+{% block extra_css %}
+<style>
+    .product-details {
+        animation: fadeIn 0.8s ease-in-out;
+    }
+
+    .product-actions {
+        animation: slideInRight 0.5s ease-in-out;
+    }
+
+    .product-image-container {
+        animation: slideInLeft 0.5s ease-in-out;
+    }
+
+    @keyframes slideInRight {
+        from { transform: translateX(50px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideInLeft {
+        from { transform: translateX(-50px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    .add-to-cart-btn {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row">
-    <div class="col-md-5">
-        <div class="card shadow-sm mb-4">
+    <div class="col-md-5 product-image-container">
+        <div class="card shadow mb-4">
             {% if product.image %}
-            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="max-height: 400px; object-fit: contain;">
+            <img src="{{ product.image.url }}" class="card-img-top product-detail-image" alt="{{ product.name }}">
             {% else %}
             <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
                 <span class="text-muted">No Image</span>
@@ -15,51 +51,123 @@
             {% endif %}
         </div>
     </div>
-    <div class="col-md-7">
-        <div class="card shadow-sm mb-4">
+    <div class="col-md-7 product-details">
+        <div class="card shadow mb-4">
             <div class="card-header bg-primary text-white">
                 <div class="d-flex justify-content-between align-items-center">
                     <h2 class="mb-0">{{ product.name }}</h2>
-                    <div>
+                    <div class="product-actions">
                         {% if user.is_authenticated %}
-                        <a href="{% url 'product:product_update' product.id %}" class="btn btn-light">Edit</a>
-                        <a href="{% url 'product:product_delete' product.id %}" class="btn btn-danger delete-confirm">Delete</a>
+                        <a href="{% url 'product:product_update' product.id %}" class="btn btn-light">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="{% url 'product:product_delete' product.id %}" class="btn btn-danger delete-confirm">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
                         {% endif %}
-                        <a href="{% url 'product:product_list' %}" class="btn btn-secondary">Back to Products</a>
+                        <a href="{% url 'product:product_list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="card-body">
-                <h3 class="text-primary mb-3">${{ product.price }}</h3>
-                
-                <div class="mb-3">
-                    <h5>Description</h5>
-                    <p>{{ product.description }}</p>
+                <h3 class="price-tag mb-4">${{ product.price }}</h3>
+
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2">Description</h5>
+                    <p class="lead">{{ product.description }}</p>
                 </div>
-                
-                <div class="mb-3">
-                    <h5>Category</h5>
-                    <p><a href="{% url 'category:category_detail' product.category.id %}">{{ product.category.name }}</a></p>
+
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2">Category</h5>
+                    <a href="{% url 'category:category_detail' product.category.id %}" class="category-badge text-decoration-none">
+                        {{ product.category.name }}
+                    </a>
                 </div>
-                
-                <div class="mb-3">
-                    <h5>Availability</h5>
+
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2">Availability</h5>
                     {% if product.is_available and product.stock > 0 %}
-                    <p class="text-success">In Stock ({{ product.stock }} available)</p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-success me-2">In Stock</span>
+                        <p class="mb-0">{{ product.stock }} units available</p>
+                    </div>
                     {% else %}
-                    <p class="text-danger">Out of Stock</p>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-danger me-2">Out of Stock</span>
+                        <p class="mb-0">Currently unavailable</p>
+                    </div>
                     {% endif %}
                 </div>
-                
-                <div class="mb-3">
-                    <p class="text-muted">Added on: {{ product.created_at|date:"F d, Y" }}</p>
+
+                <div class="mb-4">
+                    <p class="text-muted">
+                        <i class="far fa-calendar-alt me-2"></i>
+                        Added on: {{ product.created_at|date:"F d, Y" }}
+                    </p>
                 </div>
-                
+
                 {% if product.is_available and product.stock > 0 %}
-                <a href="{{ product.get_add_to_cart_url }}" class="btn btn-success btn-lg">Add to Cart</a>
+                <a href="{{ product.get_add_to_cart_url }}" class="btn btn-success btn-lg add-to-cart-btn">
+                    <i class="fas fa-shopping-cart me-2"></i> Add to Cart
+                </a>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
+
+<div class="row mt-4 fade-in">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h4 class="mb-0">Product Details</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="border-bottom pb-2">Specifications</h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Product ID
+                                <span class="badge bg-primary rounded-pill">{{ product.id }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Category
+                                <span class="badge bg-primary rounded-pill">{{ product.category.name }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Stock
+                                <span class="badge bg-primary rounded-pill">{{ product.stock }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="border-bottom pb-2">Additional Information</h5>
+                        <p>This product is part of our premium collection. We ensure the highest quality standards for all our products.</p>
+                        <p>For any inquiries about this product, please contact our customer service.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add Font Awesome icons
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    });
+</script>
 {% endblock %}

@@ -10,7 +10,8 @@ urlpatterns = [
     path('create/', views.ProductCreateView.as_view(), name='product_create'),
     path('<int:pk>/update/', views.ProductUpdateView.as_view(), name='product_update'),
     path('<int:pk>/delete/', views.ProductDeleteView.as_view(), name='product_delete'),
-    
+    path('<int:pk>/add-to-cart/', views.add_to_cart, name='add_to_cart'),
+
     # Function-based views
     path('fbv/', views.product_list, name='fbv_product_list'),
     path('fbv/<int:pk>/', views.product_detail, name='fbv_product_detail'),
